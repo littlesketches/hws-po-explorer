@@ -25,10 +25,7 @@ const settings = {      // Visualisation settings
     svgID:        'vis',
     dims: {
         height:     null, 
-        width:      3840,
-        margin: {
-            top: 50, right: 50, bottom: 50, left: 50
-        }
+        width:      3840
     },
     geometry: {
         type:       'dendogram',  // 'dendogram',
@@ -168,7 +165,7 @@ function buildFromGSheetData(settings) {
         // Compute the default height and offsets to centre the 
         settings.dims.height = x1 - x0 + dx * 2 + 500;
 
-        const xOffset = dy * settings.geometry.padding / 2 - (settings.dims.width * 0.425), // Adjustment by prop. of width to account for root not being shown
+        const xOffset = dy * settings.geometry.padding / 2 - (settings.dims.width * 0.43), // Adjustment by prop. of width to account for root not being shown
             yOffset = x0 - dx
 
         const svg = d3.select(`#${settings.svgID}`)
