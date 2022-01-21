@@ -53,15 +53,13 @@ function buildFromGSheetData(settings) {
         // Parse data schema and table
         data.schema = parseSchema(rawData[0])
         data.table =  parseTable(rawData[1])
-
         return data
-
     }).then( async (data) => {
-
         // 3. Initiate vis build sequence with data now loaded
         await applyUserQuerySettings(settings)                                                          // a. Apply query string settings
         await shapeData(data.table)
         await renderVis(data.grouped, settings)
+        await revealVis()
     })
 
     // X. Extract table schema
@@ -132,7 +130,6 @@ function buildFromGSheetData(settings) {
 
     // III. Render vis
     async function renderVis(groupedData, settings){
-
         const root = d3.hierarchy(groupedData).sort(),
             descendants = root.descendants(),
             links = root.links()
@@ -171,7 +168,7 @@ function buildFromGSheetData(settings) {
         const svg = d3.select(`#${settings.svgID}`)
             .attr("viewBox", [ 0, 0 , settings.dims.width, settings.dims.height])
             .attr("width", settings.dims.width)
-            .attr("style", "max-width: 100%; height: auto; height: intrinsic;")
+            .attr("style", "max-width: 100%; height: auto; height: intrinsic; opacity: 0")
                 .on('click', () => {
                     d3.select('.modal-container').classed('open', false)
                     resetNodeLinks()
@@ -414,11 +411,24 @@ function buildFromGSheetData(settings) {
             ])
             .on('zoom', handleZoom);
 
-        // svg.call(zoom) 
 
 
     };
 
+    // IV. Reval vis
+    async function revealVis(){
+        d3.select('#loader-message')
+            .transition().duration(500)
+            .style('opacity', 0)
+        setTimeout(() => {
+            d3.select('#loader-message').style('display', 'none')
+            d3.select(`#${settings.svgID}`)
+                .style('opacity', 0)
+                .transition().duration(1000)
+                   .style('opacity', null)
+        }, 500);
+
+    };
 
 
 //  HELPER METHODS
