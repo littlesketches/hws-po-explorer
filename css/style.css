@@ -1,0 +1,320 @@
+/****************************************************/
+/***    STYLESHEET      ***/
+/***   -----------------------------------------  ***/
+/***          ***/ 
+/****************************************************/
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;700&display=swap');
+
+:root {
+    --dark-bg:      rgb(32, 33, 36)   ;
+    --dark-fg:     #fff;
+    --estuary:      rgb(53, 208, 195)	;
+    --wetland:      rgb(153, 128, 255	);
+    --river:        rgb(94, 176, 215);
+
+}
+
+
+body{
+    font-family: 'Roboto', sans-serif;
+}
+h1{
+    text-transform: uppercase;
+    letter-spacing: 0.25rem;
+    font-size: 3vw;
+    margin-block-start: 0.5rem;
+    margin-block-end: 0.75rem
+}
+h2{
+    text-transform: uppercase;
+    letter-spacing: 0.25rem;
+    font-weight: 100;
+    font-size: 1vw;
+    margin-block-start: 0rem;
+    margin-block-end: 0rem;
+}
+.page-container{
+    position: absolute;
+    height: 100vh;
+    overflow: hidden;
+}
+.title-block{
+    position: relative;
+    top: 0;
+    height: 12.5vh;
+}
+.group-container{
+    width: 100vw;
+}
+.group-label{
+    display: inline-block;
+    font-size: 0.5vw;
+    text-transform: uppercase;
+    padding: 1rem 0;
+    font-weight: 300;
+    letter-spacing: 0.125rem;
+}
+.group-label.selected{
+    font-weight: 600;
+}
+    .catchmentName-label {
+        width: 15vw;
+        text-align: center;
+    }
+    .subCatchmentName-label {
+        width: 8vw;
+    }
+    .poScale-label {
+        width: 6.25vw;
+    }
+    .poLocationName-label {
+        width: 10.5vw;
+    }
+    .poGroup-label {
+        width: 11.5vw;
+    }
+    .poTheme-label {
+        width: 11.75vw;
+    }
+    .poDescription-label {
+        width: 20.5vw;
+        text-align: start;
+    }
+
+.vis-container{
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: scroll;
+}
+
+#vis{
+    max-width: 100%;
+    height: 100%;
+    font-family: 'Roboto', sans-serif;
+}
+
+.label{
+    text-shadow:  
+        0.5px 0.5px 0.5px #fff, 
+        1px 1px 1px #fff, 
+        2px 2px 2px #fff, 
+        5px 5px 5px #fff;
+    dominant-baseline: middle;
+}
+
+/* PATHS AND NODES */
+.node{
+    fill:   #000;
+    cursor: pointer;
+}
+
+.link-group{
+    cursor: pointer;
+}
+.link-group{
+    fill:           none;
+    stroke:        #555;
+    stroke-width:   0.25px
+}
+.link.root{
+    display: none;
+}
+
+/****** MODAL ******/
+.modal-container{
+    position: absolute;
+    top: 10vh;
+    left: 0;
+    transform: translateX(-62.5vw);
+    width: 57.5vw;
+    height: 85vh;
+    padding: 2vw;
+    transition: 1000ms;
+    border-radius: 0 2.5vw 0 0;
+}
+.modal-container.open{
+    animation-duration: 1000ms;
+    transform: translateX(0);
+}
+.dark .modal-container{
+    background-color: rgba(255, 255, 255, 0.95);
+    color: var(--dark-bg);
+}
+.modal-close{
+    cursor: pointer;
+    padding: 2vw;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+.modal-container h1{
+    font-size: 3vw;
+}
+.modal-content-container{
+
+}
+.modal-item{
+    padding: 0.5vh 0;
+}
+.modal-label,
+.modal-content{
+    vertical-align: top;
+    display: inline-block;
+    font-size: 1.25vw;
+}
+.modal-label{
+    font-weight: 500;
+    width: 30%;
+}
+.modal-content{
+    font-weight: 300;
+    width: 55%;
+}
+
+/***** DARK MODE ****/
+body.dark{
+    background: var(--dark-bg);
+    /* background: linear-gradient(60deg, rgb(6, 4, 12) 0%, rgb(2, 38, 43) 100%); */
+    color: #fff;
+}
+.dark .label{
+    text-shadow:  
+        0.5px 0.5px 0.5px var(--dark-bg), 
+        1px 1px 1px var(--dark-bg), 
+        2px 2px 2px var(--dark-bg), 
+        5px 5px 2px var(--dark-bg), 
+        5px 5px 2px var(--dark-bg), 
+        5px 5px 2px var(--dark-bg),
+        5px 5px 5px var(--dark-bg),
+        5px 5px 10px var(--dark-bg),
+        10px 10px 10px var(--dark-bg)
+}
+.dark .link-group{
+    stroke:        #fff;
+    stroke-width:   2.25px
+}
+.dark .node{
+    /* fill: #fff; */
+}
+.node-circle{
+    /* fill: #fff; */
+}
+
+/* LABELS */
+.depth-catchmentName{
+    text-anchor: middle;
+    font-size: 100px;
+    font-weight: bold;
+    stroke: var(--dark-bg);
+    stroke-width: 1.5px;
+}
+
+.depth-subCatchmentName{
+    text-anchor: middle;
+    font-size: 40px;
+}
+.depth-poScale{
+    text-anchor: middle;
+    font-size: 20px;
+}
+.depth-poLocationName{
+    text-anchor: middle;
+    font-size: 30px;
+    font-weight: bold;
+}
+.dark .depth-poLocationName{
+    fill: #fff;
+}
+.depth-poGroup{
+    text-anchor: middle;
+    font-size: 24px;
+}
+.depth-poTheme{
+    text-anchor: middle;
+    font-size: 20px;
+}
+.depth-poDescription{
+    text-anchor: start;
+    font-size: 20px;
+}
+
+.dark .depth-catchmentName{
+    fill: var(--dark-bg);  
+    stroke: var(--dark-fg);
+}
+.dark .depth-subCatchmentName{
+    fill: #fff;    
+}
+
+.depth-root, 
+.regional-all-catchments.depth-subCatchmentName .label,
+.regional-all-catchments.depth-poScale .label{
+    display: none;
+}
+
+/* poScale */
+.dark .sub-catchment{
+    fill: var(--river); 
+}
+.dark .link.sub-catchment{
+    stroke: var(--river); 
+}
+.dark .estuary{
+    fill: var(--estuary);
+}
+.dark .link.estuary{
+    stroke:  var(--estuary);
+}
+.dark  .wetland{
+    fill: var(--wetland);
+}
+.dark  .link.wetland{
+    stroke: var(--wetland);
+}
+
+/* poGroup */
+.dark  .flow-regimes{
+    fill: #B497E7;
+}
+.dark  .collaborative-governance{
+    fill: #D3B484;
+}
+.dark  .water-quality{
+    fill: #66C5CC;
+}
+.dark  .economic{
+    fill: #F89C74;
+}
+.dark .habitat{
+    fill:   #F6CF71
+}
+.dark .vegetation{
+    fill: #87C55F;
+}
+.dark .cultural{
+    fill: #DCB0F2;
+}
+.dark .community-places{
+    fill: #B3B3B3;
+}
+.dark .stormwater{
+    fill: #9EB9F3;
+}
+.dark .adaptive-management-and-research{
+    fill: #8BE0A4;
+}
+.dark .pests{
+    fill: #FE88B1;
+}
+.dark .engaged-communities{
+    fill: #C9DB74
+}
+
+
+.dark .link{
+    fill: none;
+}
+
+

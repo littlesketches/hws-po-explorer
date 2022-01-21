@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Melbourne Water: HWS PO tool</title>
+        <meta name="description" content="Exploration of ways to organise and leverage the HWS PO structure">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="css/style.css">
+        <script src="https://d3js.org/d3.v7.min.js"></script>
+        <script src="js/main.js"></script>
+    </head>
+    <body class = "dark">
+        <!-- MAIN PAGE CONTAINER: Header + vis sections -->
+        <main class = "page-container">
+            <div class = 'title-block'>
+                <h1>Healthy Waterways Strategy </h1>
+                <h2>A very lengthy look at the hierarchy of 956 performance objectives</h2>
+                <div class = 'group-container'>
+                    <div class = 'catchmentName-label group-label'>Catchment</div>
+                    <div class = 'subCatchmentName-label group-label'>Sub catchment</div>
+                    <div class = 'poScale-label group-label'>Type</div>
+                    <div class = 'poLocationName-label group-label'>Location</div>
+                    <div class = 'poGroup-label group-label'>Group</div>
+                    <div class = 'poTheme-label group-label'>Theme</div>
+                    <div class = 'poDescription-label group-label'>(Regional) Performance objective</div>
+                </div>
+            </div>
+            <div class = "vis-container">
+                <svg id = "vis"></svg>
+            </div>
+        </main>
+        <aside>
+            <div class = "modal-container">
+                <div class= 'modal-close'>&#8592;</div>
+                <div class = "modal-title-container">
+                    <h1 id ="po-modal-title">Performance objective</h1>
+                    <div id = "po-summary-title" class = 'modal-item title'>
+                        <div  class = 'modal-content'></div>
+                    </div>
+                    <div id = "po-modal-location" class = 'modal-item title'>
+                        <div class = 'modal-label'>Location</div>
+                        <div class = 'modal-content'></div>
+                    </div>
+                    <div id = "po-modal-sub-catchment" class = 'modal-item title'>
+                        <div class = 'modal-label'>Sub-catchment</div>
+                        <div class = 'modal-content'></h3>
+                    </div>
+                    <div id = "po-modal-catchment" class = 'modal-item title'>
+                        <div class = 'modal-label'>Catchment</div>
+                        <div class = 'modal-content'></h3>
+                    </div>
+                </div>
+
+                <hr>
+                <div class = "modal-content-container">
+                    <h3>About this objective</h3>
+                    <div id = "po-modal-description" class ="modal-item">
+                        <div class = 'modal-label'>Description</div>
+                        <div class = 'modal-content'></div>
+                    </div> 
+                    <div id = "po-modal-theme" class ="modal-item">
+                        <div class = 'modal-label'>Theme</div>
+                        <div class = 'modal-content'></div>
+                    </div> 
+                    <div id = "po-modal-group" class ="modal-item">
+                        <div class = 'modal-label'>Group</div>
+                        <div class = 'modal-content'></div>
+                    </div> 
+                    <div id = "po-modal-partners" class ="modal-item">
+                        <div class = 'modal-label'>Partners</div>
+                        <div class = 'modal-content'></div>
+                    </div> 
+                </div>
+
+                <hr>
+                <div class = "modal-content-container">
+                    <h3>Melbourne Water</h3>
+                    <div id = "po-modal-accountability" class ="modal-item">
+                        <div class = 'modal-label'>Accountability</div>
+                        <div class = 'modal-content'></div>
+                    </div> 
+                    <div id = "po-modal-codelivery" class ="modal-item">
+                        <div class = 'modal-label'>Codelivery level</div>
+                        <div class = 'modal-content'></div>
+                    </div> 
+                    <div id = "po-modal-investment" class ="modal-item">
+                        <div class = 'modal-label'>Investment approach</div>
+                        <div class = 'modal-content'></div>
+                    </div> 
+                </div>
+
+                <hr>
+                <div class = "modal-content-container">
+                    <h3>Partners</h3>
+
+                </div>
+
+            </div>
+        </aside>
+
+    </body>
+</html>
