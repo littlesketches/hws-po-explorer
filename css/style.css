@@ -102,12 +102,10 @@ hr{
     width: 100vw;
 }
 .vis-container{
-
     position: relative;
     width: 100%;
     height: 100%;
     overflow: scroll;
-
 }
 
 #vis{
@@ -213,7 +211,7 @@ body.dark{
         10px 10px 10px var(--dark-bg)
 }
 .dark .link-group{
-    stroke:        #fff;
+    stroke:        rgb(91, 91, 91);
     stroke-width:   2.25px
 }
 .dark .node{
