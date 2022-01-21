@@ -338,24 +338,50 @@ function buildFromGSheetData(settings) {
         };
 
         function updateLeafModal(nodeData){
+            // Set a poGroup class on the modal window
+            if(d3.select('.modal-container').node().classList[2]){
+                d3.select('.modal-container').node().classList
+                    .remove(d3.select('.modal-container').node().classList[2])
+            }
+            d3.select('.modal-container').classed(helpers.slugify(nodeData.poGroup), true)
+
             // Update the modal
-            d3.select('#po-modal-summary').html(`ID: ${nodeData.poID}`)
-            d3.select('#po-modal-location')
+            d3.select('#po-modal-summary .modal-content')
+                .html(`ID: #${nodeData.poID} : ${nodeData.poNumber}`)
+            d3.select('#po-modal-location  .modal-content')
                 .html(nodeData.poLocationName)
             d3.select('#po-modal-sub-catchment  .modal-content')
-                .html(nodeData.subCatchmentName)
+                .html(`${nodeData.subCatchmentName} (${nodeData.poScale})`)
             d3.select('#po-modal-catchment  .modal-content')
                 .html(nodeData.catchmentName)
+
             d3.select('#po-modal-description .modal-content')
                 .html(nodeData.poDescription)
             d3.select('#po-modal-group .modal-content')
                 .html(nodeData.poGroup)
             d3.select('#po-modal-theme .modal-content')
                 .html(nodeData.poTheme)
+
+            d3.select('#po-modal-mwOwner .modal-content')
+                .html(nodeData.mwOwner)
+            d3.select('#po-modal-mwBusGroup .modal-content')
+                .html(nodeData.mwBusGroup)
+            d3.select('#po-modal-mwTeam .modal-content')
+                .html(nodeData.mwTeam)
+            d3.select('#po-modal-mwInitTeam .modal-content')
+                .html(nodeData.mwInitTeam)
             d3.select('#po-modal-accountability .modal-content')
                 .html(nodeData.mwAccountability)
+            d3.select('#po-modal-codelivery .modal-content')
+                .html(nodeData.mwCodeliveryLevel)
             d3.select('#po-modal-investment .modal-content')
                 .html(nodeData.poInvestment)
+
+            d3.select('#po-modal-wdip_p .modal-content')
+                .html(nodeData.hwsWDIP_P)
+            d3.select('#po-modal-wdip_s .modal-content')
+                .html(nodeData.hwsWDIP_S)
+
         };
 
         d3.select('.modal-close').on('click', () => {

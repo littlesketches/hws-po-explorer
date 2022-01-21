@@ -12,7 +12,6 @@
     --estuary:      rgb(53, 208, 195)	;
     --wetland:      rgb(153, 128, 255	);
     --river:        rgb(94, 176, 215);
-
 }
 
 
@@ -33,6 +32,17 @@ h2{
     font-size: 1vw;
     margin-block-start: 0rem;
     margin-block-end: 0rem;
+}
+h4{
+    text-transform: uppercase;
+    letter-spacing: 0.125rem;
+    font-weight: 500;
+    font-size: 1.5vh;
+    margin-block-start: 0rem;
+    margin-block-end: 0.5rem;
+}
+hr{
+    border-style: solid;
 }
 .page-container{
     position: absolute;
@@ -150,19 +160,19 @@ h2{
     right: 0;
 }
 .modal-container h1{
-    font-size: 3vw;
+    font-size: 3vh;
 }
 .modal-content-container{
 
 }
 .modal-item{
-    padding: 0.5vh 0;
+    padding: 0.125vh 0;
 }
 .modal-label,
 .modal-content{
     vertical-align: top;
     display: inline-block;
-    font-size: 1.25vw;
+    font-size: 1.25vh;
 }
 .modal-label{
     font-weight: 500;
@@ -170,7 +180,7 @@ h2{
 }
 .modal-content{
     font-weight: 300;
-    width: 55%;
+    width: 65%;
 }
 
 /***** DARK MODE ****/
@@ -278,39 +288,76 @@ body.dark{
 .dark  .flow-regimes{
     fill: #B497E7;
 }
+.dark .modal-container.flow-regimes{
+    background-color: #B497E7;
+}
 .dark  .collaborative-governance{
     fill: #D3B484;
+}
+.dark .modal-container.collaborative-governance{
+    background-color: #D3B484;
 }
 .dark  .water-quality{
     fill: #66C5CC;
 }
+.dark .modal-container.water-quality{
+    background-color: #66C5CC;
+}
 .dark  .economic{
     fill: #F89C74;
+}
+.dark .modal-container.economic{
+    background-color: #F89C74;
 }
 .dark .habitat{
     fill:   #F6CF71
 }
+.dark .modal-container.habitat{
+    background-color: #F6CF71;
+}
 .dark .vegetation{
     fill: #87C55F;
+}
+.dark .modal-container.vegetation{
+    background-color:  #87C55F;
 }
 .dark .cultural{
     fill: #DCB0F2;
 }
+.dark .modal-container.cultural{
+    background-color:  #DCB0F2;
+}
 .dark .community-places{
     fill: #B3B3B3;
+}
+.dark .modal-container.community-places{
+    background-color:  #B3B3B3;
 }
 .dark .stormwater{
     fill: #9EB9F3;
 }
+.dark .modal-container.stormwater{
+    background-color:  #B3B3B3;
+}
 .dark .adaptive-management-and-research{
     fill: #8BE0A4;
+}
+.dark .modal-container.adaptive-management-and-research{
+    background-color:  #8BE0A4;
 }
 .dark .pests{
     fill: #FE88B1;
 }
+.dark .modal-container.pests{
+    background-color:  #FE88B1;
+}
 .dark .engaged-communities{
     fill: #C9DB74
 }
+.dark .modal-container.engaged-communities{
+    background-color:  #C9DB74;
+}
+
 
 
 .dark .link{
