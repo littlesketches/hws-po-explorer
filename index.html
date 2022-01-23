@@ -14,10 +14,14 @@
         <!-- MAIN PAGE CONTAINER: Header + vis sections -->
         <main class = "page-container">
             <div class = 'title-block'>
-                <h1>Healthy Waterways Strategy </h1>
+                <h1>Healthy Waterways Strategy</h1>
                 <h2>A very very lengthy look at the hierarchy of 956 performance objectives</h2>
                 <div class = 'group-container'>
-                    <div class = 'catchmentName-label group-label'>Catchment</div>
+                    <div class = 'catchmentName-label group-label'>
+                        <select name = "region" class ='dropdown-region'>
+                            <option selected disabled>Choose a catchment</option>
+                        </select>
+                    </div>
                     <div class = 'subCatchmentName-label group-label'>Sub catchment</div>
                     <div class = 'poScale-label group-label'>Type</div>
                     <div class = 'poLocationName-label group-label'>Location</div>
@@ -53,7 +57,6 @@
                         <div class = 'modal-content'></h3>
                     </div>
                 </div>
-
                 <hr>
                 <div class = "modal-content-container">
                     <h4>About this objective</h3>
@@ -70,7 +73,6 @@
                         <div class = 'modal-content'></div>
                     </div> 
                 </div>
-
                 <hr>
                 <div class = "modal-content-container">
                     <h4>Melbourne Water</h3>
@@ -98,9 +100,7 @@
                         <div class = 'modal-label'>Codelivery level</div>
                         <div class = 'modal-content'></div>
                     </div> 
-
                 </div>
-
                 <hr>
                 <div class = "modal-content-container">
                     <h4>Delivery and partners</h3>

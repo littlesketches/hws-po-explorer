@@ -57,13 +57,17 @@ hr{
 .group-container{
     width: 100vw;
 }
+.dropdown-region,
 .group-label{
-    display: inline-block;
     font-size: 0.5vw;
     text-transform: uppercase;
-    padding: 1rem 0;
     font-weight: 300;
     letter-spacing: 0.125rem;
+}
+
+.group-label{
+    display: inline-block;
+    padding: 1rem 0;
 }
 .group-label.selected{
     font-weight: 600;
@@ -72,6 +76,17 @@ hr{
         width: 15vw;
         text-align: center;
     }
+    select.dropdown-region,
+    select.dropdown-region:active{
+        width: 100%;
+        background: none;
+        color: #fff;
+        border: none;
+        text-align-last:center;
+        direction: rtl;
+    }
+
+
     .subCatchmentName-label {
         width: 8vw;
     }
@@ -128,7 +143,6 @@ hr{
     fill:   #000;
     cursor: pointer;
 }
-
 .link-group{
     cursor: pointer;
 }

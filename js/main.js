@@ -18,11 +18,12 @@ const api = {           // References for data table links for each table used (
 const data = {      // Object to store loaded/parsed/shaped data
     grouped:        {},
     hierarchy:      {},
+    levels:         {},
     schema:         {}
 }         
 
-const settings = {      // Visualisation settings
-    svgID:        'vis',
+const settings = {          // Visualisation settings
+    svgID:          'vis',
     dims: {
         height:     null, 
         width:      3840
@@ -33,13 +34,23 @@ const settings = {      // Visualisation settings
         rotation:   0
     },
     layout: {                // Object to store default layout options (updated if settings are sent via query string)
+        view:           'Regional',      // 
     },
     lists: {
+        regions: [
+            {title: "Regional (all catchments)",    name: "Regional"},
+            {title: "Dandenong catchment",          name: "Dandenong"},
+            {title: "Maribyrnong catchment",        name: "Maribyrnong"},
+            {title: "Westernport catchment",        name: "Westernport"},
+            {title: "Yarra catchment",              name: "Yarra"},
+        ]
+
     }
 }
 
 const state = {         // Object to store application state
-    user:      ''      // 
+    user:      '',      // 
+    region:     'Regional'
 }
 
 // 1.  VISUALISATION BUILD FUNCTION  
@@ -58,8 +69,9 @@ function buildFromGSheetData(settings) {
         // 3. Initiate vis build sequence with data now loaded
         await applyUserQuerySettings(settings)                                                          // a. Apply query string settings
         await shapeData(data.table)
-        await renderVis(data.grouped, settings)
+        await renderVis(data.grouped[settings.layout.view], settings)
         await revealVis()
+        await setupUI()
     })
 
     // X. Extract table schema
@@ -106,26 +118,51 @@ function buildFromGSheetData(settings) {
 
     // II. Reshape data
     async function shapeData(tableData){
-        data.grouped = d3.group(tableData, 
-            d => d.catchmentName, 
-            d => d.subCatchmentName, 
-            d => d.poScale, 
-            d => d.poLocationName, 
-            d => d.poGroup, 
-            d => d.poTheme, 
-        )
 
-        data.hierarchy = d3.hierarchy(d3.group(data.grouped) )
+        // Layouts for single catchment
+        for (const regionObj of  settings.lists.regions){
+            data.grouped[regionObj.name] = d3.group(tableData.filter(d => d.catchmentName === regionObj.name), 
+                d => d.catchmentName, 
+                d => d.subCatchmentName, 
+                d => d.poScale, 
+                d => d.poLocationName, 
+                d => d.poGroup, 
+                d => d.poTheme, 
+            )
 
-        data.schema.levels = [
-            { name: 'catchmentName',     dx: -450,      wrapLength: null },   
-            { name: 'subCatchmentName',  dx: -280,      wrapLength: 300 },   
-            { name: 'poScale',           dx: -250,      wrapLength: null },   
-            { name: 'poLocationName',    dx: -200,      wrapLength: 250 },   
-            { name: 'poGroup',           dx: -30,       wrapLength: 250 },   
-            { name: 'poTheme',           dx: 200,       wrapLength: 480 },   
-            { name: 'leafNode',          dx: 350,       wrapLength: 1300 }   
-        ]
+            data.levels[regionObj.name] = [
+                { name: 'catchmentName',     dx: -450,      wrapLength: null },   
+                { name: 'subCatchmentName',  dx: -280,      wrapLength: 300 },   
+                { name: 'poScale',           dx: -250,      wrapLength: null },   
+                { name: 'poLocationName',    dx: -200,      wrapLength: 250 },   
+                { name: 'poGroup',           dx: -30,       wrapLength: 250 },   
+                { name: 'poTheme',           dx: 200,       wrapLength: 480 },   
+                { name: 'leafNode',          dx: 350,       wrapLength: 1300 }   
+            ]
+        }
+
+
+
+        // Layout for all catchments
+            data.grouped.all = d3.group(tableData, 
+                d => d.catchmentName, 
+                d => d.subCatchmentName, 
+                d => d.poScale, 
+                d => d.poLocationName, 
+                d => d.poGroup, 
+                d => d.poTheme, 
+            )
+
+            data.levels.all = [
+                { name: 'catchmentName',     dx: -450,      wrapLength: null },   
+                { name: 'subCatchmentName',  dx: -280,      wrapLength: 300 },   
+                { name: 'poScale',           dx: -250,      wrapLength: null },   
+                { name: 'poLocationName',    dx: -200,      wrapLength: 250 },   
+                { name: 'poGroup',           dx: -30,       wrapLength: 250 },   
+                { name: 'poTheme',           dx: 200,       wrapLength: 480 },   
+                { name: 'leafNode',          dx: 350,       wrapLength: 1300 }   
+            ]
+        
     }; //shapeData
 
     // III. Render vis
@@ -197,7 +234,7 @@ function buildFromGSheetData(settings) {
                     return `link ${ancestorClasses === '' ? 'root' : ancestorClasses}`
                 })
                 .attr("d", d3.linkHorizontal()
-                    .x(d => d.y + (d.depth === 0 ? 0 : data.schema.levels[d.depth - 1].dx) )
+                    .x(d => d.y + (d.depth === 0 ? 0 : data.levels[settings.layout.view][d.depth - 1].dx) )
                     .y(d => d.x)
                 );
 
@@ -210,12 +247,12 @@ function buildFromGSheetData(settings) {
                 .attr('id', d => d.id)
                 .attr('class', d => {
                     const classList = d.depth === 0 ? 'depth-root'
-                        : (d.data.length === 2 && d.parent) ? `${helpers.slugify(d.data[0])} ${typeof d.parent.data[0] !== 'undefined' ? helpers.slugify(d.parent.data[0]) : ''}  depth-${data.schema.levels[d.depth - 1].name}`
+                        : (d.data.length === 2 && d.parent) ? `${helpers.slugify(d.data[0])} ${typeof d.parent.data[0] !== 'undefined' ? helpers.slugify(d.parent.data[0]) : ''}  depth-${data.levels[settings.layout.view][d.depth - 1].name}`
                             : `depth-poDescription ${helpers.slugify(d.data.catchmentName)} ${helpers.slugify(d.data.subCatchmentName)} ${helpers.slugify(d.data.poScale)}  ${helpers.slugify(d.data.poGroup)}  ${helpers.slugify(d.data.poTheme)} ` 
                     return `node  ${classList}`
                 })
                 .attr("transform", (d, i) => {
-                    const dy = d.y + (d.depth === 0 ? 0 : data.schema.levels[d.depth - 1].dx)
+                    const dy = d.y + (d.depth === 0 ? 0 : data.levels[settings.layout.view][d.depth - 1].dx)
                     return `translate(${dy}, ${d.x})`
                 })
                 .on('click', function(event, node) {
@@ -415,7 +452,26 @@ function buildFromGSheetData(settings) {
 
     };
 
-    // IV. Reval vis
+    // IV. Setup UI 
+    async function setupUI(){
+        for( const obj of settings.lists.regions){
+            d3.select('.dropdown-region').append('option')
+                .attr('value', obj.name)
+                .html(obj.title)
+        }
+
+        d3.select('.dropdown-region').on('change', async function(){
+            settings.layout.view = this.value
+            d3.selectAll(`#${settings.svgID} *`).remove()
+            await renderVis(data.grouped[settings.layout.view], settings)
+            await revealVis()                
+
+            d3.select('.poDescription-label').html(this.value === 'Regional' ? 'Regional performance objective': 'Performance objective' )
+        })
+    };
+
+
+    // V. Reval vis
     async function revealVis(){
         d3.select('#loader-message')
             .transition().duration(500)
@@ -429,6 +485,8 @@ function buildFromGSheetData(settings) {
         }, 500);
 
     };
+
+
 
 
 //  HELPER METHODS
@@ -449,7 +507,7 @@ const helpers= {
         selection.each(function() {
             let text = d3.select(this),
                 textData = text.node().__data__,
-                width = textData.depth === 0 ? null : data.schema.levels[textData.depth - 1].wrapLength,
+                width = textData.depth === 0 ? null : data.levels[settings.layout.view][textData.depth - 1].wrapLength,
                 words = text.text().split(/\s+/).reverse(),
                 word,
                 line = [],
