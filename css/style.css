@@ -212,6 +212,9 @@ body.dark{
     /* background: linear-gradient(60deg, rgb(6, 4, 12) 0%, rgb(2, 38, 43) 100%); */
     color: #fff;
 }
+body.dark.no-bg{
+    background: transparent;
+}
 .dark .label{
     text-shadow:  
         0.5px 0.5px 0.5px var(--dark-bg), 

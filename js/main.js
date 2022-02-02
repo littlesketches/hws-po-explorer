@@ -114,6 +114,10 @@ function buildFromGSheetData(settings) {
             settings.layout.showHeader = queryParameters.get('showHeader') === 'false' ? false : true
             d3.select('.page-container').classed('hideHeader', !settings.layout.showHeader)
         }
+        if (queryParameters.has('noBackground') && queryParameters.get('noBackground') === 'true') { 
+            d3.select('body').classed('no-bg', true)
+        }
+
     }; // end applyUserQuerySettings()
 
     // II. Reshape data
