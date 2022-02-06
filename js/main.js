@@ -15,15 +15,14 @@ const api = {           // References for data table links for each table used (
     }
 }
 
-const data = {      // Object to store loaded/parsed/shaped data
+let data = {      // Object to store loaded/parsed/shaped data
     grouped:        {},
-    hierarchy:      {},
-    levels:         {},
-    schema:         {}
+    levels:         {}
 }         
 
 const settings = {          // Visualisation settings
     svgID:          'vis',
+    dataSource:     'GSheet',
     dims: {
         height:     null, 
         width:      3840
@@ -53,63 +52,90 @@ const state = {         // Object to store application state
     region:     'Regional'
 }
 
-// 1.  VISUALISATION BUILD FUNCTION  
-buildFromGSheetData(settings)
 
-function buildFromGSheetData(settings) {
-    // 2. Asynchronous data load (with Promise.all) and D3 (Fetch API): references the shared "api" object for links to specific data tables
-    Promise.all(
-        Object.values(api.gsTableLinks).map(link => d3.tsv(link))       // Pass in array of d3.tsv loaders with each link
-    ).then( rawData => {
-        // Parse data schema and table
-        data.schema = parseSchema(rawData[0])
-        data.table =  parseTable(rawData[1])
-        return data
-    }).then( async (data) => {
-        // 3. Initiate vis build sequence with data now loaded
-        await applyUserQuerySettings(settings)                                                          // a. Apply query string settings
-        await shapeData(data.table)
-        await renderVis(data.grouped[settings.layout.view], settings)
-        await revealVis()
-        await setupUI()
-    })
+// 1.  VISUALISATION BUILD FUNCTION(S) 
+    applyUserQuerySettings(settings)                // a. Apply query string settings
 
-    // X. Extract table schema
-    const parseSchema = (fieldData) => {
-        const obj = {}
-        for (const fieldDatum of fieldData){
-            obj[fieldDatum.dbFieldName] = {}
-            for (const name of fieldData.columns){
-                obj[fieldDatum.dbFieldName][name] = fieldDatum[name] 
+    buildVis(settings)
+
+    function buildVis(settings){
+
+        // 2A. Asynchronous data load (with Promise.all) and D3 (Fetch API): references the shared "api" object for links to specific data tables
+        if(settings.dataSource === 'GSheet'){
+            Promise.all(
+                Object.values(api.gsTableLinks).map(link => d3.tsv(link))       // Pass in array of d3.tsv loaders with each link
+            ).then( rawData => {
+                // Parse data schema and table
+                data.schema = parseSchema(rawData[0])
+                data.table =  parseTable(rawData[1])
+                return data
+            }).then( async (data) => {
+                // 3A. Initiate vis build sequence with data now loaded
+                await shapeData(data.table)
+                await renderVis(data.grouped[settings.layout.view], settings)
+                await revealVis()
+                await setupUI()
+            })
+
+            // X. Extract table schema
+            const parseSchema = (fieldData) => {
+                const obj = {}
+                for (const fieldDatum of fieldData){
+                    obj[fieldDatum.dbFieldName] = {}
+                    for (const name of fieldData.columns){
+                        obj[fieldDatum.dbFieldName][name] = fieldDatum[name] 
+                    }
+                }
+                return obj
+            }
+
+            // X. Table data parsing function: trim() header white space and prase numbers with "$" and "," stripped. 
+            const parseTable = (tableData) => {
+                return tableData.map(row => {
+                    const newObj = {}
+                    Object.entries(row).forEach(([key, value]) => {
+                        const alias = data.schema[key].alias
+                        switch(alias){
+                            case 'year':
+                                newObj[alias] =  value
+                                break     
+                            default:
+                                newObj[alias] = isNaN(parseFloat(value.replace(/\$|,/g, ''))) ? value : parseFloat(value.replace(/\$|,/g, '')) 
+                        }
+                    })
+                    return newObj
+                })
+            };   
+
+        // 2B. USE LOCAL DATA SET
+        } else {
+            data.table = localData.table
+            data.schema = localData.schema
+
+            localBuild()
+            async function localBuild(){
+                // 2/3B. Initiate vis build sequence with data now loade
+                await shapeData(data.table)
+                await renderVis(data.grouped[settings.layout.view], settings)
+                await revealVis()
+                await setupUI()
             }
         }
-        return obj
-    }
+    };
 
-    // X. Table data parsing function: trim() header white space and prase numbers with "$" and "," stripped. 
-    const parseTable = (tableData) => {
-        return tableData.map(row => {
-            const newObj = {}
-            Object.entries(row).forEach(([key, value]) => {
-                const alias = data.schema[key].alias
-                switch(alias){
-                    case 'year':
-                        newObj[alias] =  value
-                        break     
-                    default:
-                        newObj[alias] = isNaN(parseFloat(value.replace(/\$|,/g, ''))) ? value : parseFloat(value.replace(/\$|,/g, '')) 
-                }
-            })
-            return newObj
-        })
-    };   
-};
+
+    //////////////////////////////////
+    /// BUILD FUNCTION COMPONENTS  ///
+    //////////////////////////////////
 
     // I. Apply user options
-    async function applyUserQuerySettings(settings){
+    function applyUserQuerySettings(settings){
         console.log('Applying query string to vis settings...')
         // i. Check for query parameters and update settings
         const queryParameters = new URLSearchParams(window.location.search)
+        if (queryParameters.has('dataSource') && queryParameters.get('dataSource') !== 'GSheet') { 
+            settings.dataSource = queryParameters.get('dataSource')
+        }
         if (queryParameters.has('showHeader')) { 
             settings.layout.showHeader = queryParameters.get('showHeader') === 'false' ? false : true
             d3.select('.page-container').classed('hideHeader', !settings.layout.showHeader)
@@ -145,8 +171,6 @@ function buildFromGSheetData(settings) {
             ]
         }
 
-
-
         // Layout for all catchments
             data.grouped.all = d3.group(tableData, 
                 d => d.catchmentName, 
@@ -166,7 +190,6 @@ function buildFromGSheetData(settings) {
                 { name: 'poTheme',           dx: 200,       wrapLength: 480 },   
                 { name: 'leafNode',          dx: 350,       wrapLength: 1300 }   
             ]
-        
     }; //shapeData
 
     // III. Render vis
@@ -207,13 +230,15 @@ function buildFromGSheetData(settings) {
             yOffset = x0 - dx
 
         const svg = d3.select(`#${settings.svgID}`)
-            .attr("viewBox", [ 0, 0 , settings.dims.width, settings.dims.height])
+
+        svg.attr("viewBox", [ 0, 0 , settings.dims.width, settings.dims.height])
             .attr("width", settings.dims.width)
             .attr("style", "max-width: 100%; height: auto; height: intrinsic; opacity: 0")
                 .on('click', () => {
                     d3.select('.modal-container').classed('open', false)
                     resetNodeLinks()
                 })
+
         const zoomArea = svg.append('g').classed('zoom-area', true)
         const chart = zoomArea.append('g').classed('group-chart', true)
             .attr('transform', `translate(${-xOffset}, ${-yOffset})`)
@@ -451,9 +476,6 @@ function buildFromGSheetData(settings) {
                 [settings.dims.width * 1.0, settings.dims.height * 1.0]
             ])
             .on('zoom', handleZoom);
-
-
-
     };
 
     // IV. Setup UI 
@@ -472,6 +494,8 @@ function buildFromGSheetData(settings) {
 
             d3.select('.poDescription-label').html(this.value === 'Regional' ? 'Regional performance objective': 'Performance objective' )
         })
+
+
     };
 
 
@@ -487,7 +511,6 @@ function buildFromGSheetData(settings) {
                 .transition().duration(1000)
                    .style('opacity', null)
         }, 500);
-
     };
 
 
